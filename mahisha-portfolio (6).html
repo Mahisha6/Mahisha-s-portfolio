@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mahisha Senthil Kumar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a192f;
+      --bg2: #112240;
+      --bg3: #1d3461;
+      --teal: #64ffda;
+      --teal-dim: rgba(100,255,218,0.08);
+      --white: #ccd6f6;
+      --white-dim: #8892b0;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 50px;
+      background: rgba(10,25,47,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(100,255,218,0.07);
+    }
+    .nav-logo { font-family:'Fira Code',monospace; font-size:1.1rem; color:var(--white); text-decoration:none; }
+    .nav-logo span { color:var(--teal); }
+    .nav-links { display:flex; gap:32px; list-style:none; }
+    .nav-links a { font-family:'Fira Code',monospace; font-size:0.82rem; color:var(--white-dim); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover { color:var(--teal); }
+    .nav-icons { display:flex; gap:18px; align-items:center; }
+    .nav-icons a { color:var(--white-dim); text-decoration:none; transition:color .2s,transform .2s; display:flex; align-items:center; }
+    .nav-icons a:hover { color:var(--teal); transform:translateY(-2px); }
+    .nav-icons svg { width:20px; height:20px; fill:currentColor; }
+
+    #home { min-height:100vh; display:flex; align-items:center; padding:120px 120px 80px; overflow:hidden; }
+    .leaf-container { flex:0 0 360px; display:flex; align-items:center; justify-content:center; }
+    #leafCanvas { display:block; }
+    .hero-text { flex:1; padding-left:60px; animation:fadeInRight 1s ease .2s both; }
+    .hero-greeting { font-size:4.2rem; font-weight:300; line-height:1.1; margin-bottom:28px; }
+    .hero-greeting .name { color:var(--teal); font-weight:600; }
+    .hero-greeting .cursor { display:inline-block; width:3px; height:.9em; background:var(--teal); margin-left:4px; vertical-align:middle; animation:blink 1s step-end infinite; }
+    .hero-bio { font-size:1.05rem; color:var(--white-dim); line-height:1.75; max-width:520px; margin-bottom:40px; }
+    .btn-sayhi { display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border:1px solid var(--teal); border-radius:4px; color:var(--teal); background:transparent; font-family:'Fira Code',monospace; font-size:.88rem; text-decoration:none; transition:background .2s; }
+    .btn-sayhi:hover { background:var(--teal-dim); }
+    .btn-sayhi svg { width:18px; height:18px; fill:currentColor; }
+
+    section:not(#home) { padding:100px 120px; }
+    .section-title { font-family:'Fira Code',monospace; font-size:2rem; font-weight:400; color:var(--white); margin-bottom:50px; display:flex; align-items:center; gap:16px; }
+    .section-title .slash { color:var(--teal); }
+    .section-title::after { content:''; display:block; height:1px; width:280px; background:var(--bg3); }
+
+    /* ABOUT */
+    .about-grid { display:grid; grid-template-columns:1fr 320px; gap:60px; align-items:start; }
+    .about-text p { color:var(--white-dim); line-height:1.8; margin-bottom:20px; font-size:1rem; }
+    .about-text strong { color:var(--white); }
+    .about-text a { color:var(--teal); text-decoration:none; }
+    .skills-list { display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; margin-top:20px; list-style:none; }
+    .skills-list li { font-family:'Fira Code',monospace; font-size:.82rem; color:var(--white-dim); display:flex; align-items:center; gap:8px; }
+    .skills-list li::before { content:'▸'; color:var(--teal); }
+    .about-box { background:var(--bg2); border:2px solid var(--teal); border-radius:6px; box-shadow:6px 6px 0 rgba(100,255,218,.15); padding:36px; display:flex; flex-direction:column; align-items:center; gap:16px; }
+    .about-initials { width:110px; height:110px; border-radius:50%; background:linear-gradient(135deg,var(--bg3),var(--teal-dim)); border:2px solid var(--teal); display:flex; align-items:center; justify-content:center; font-family:'Fira Code',monospace; font-size:1.8rem; color:var(--teal); }
+    .about-box .edu { font-family:'Fira Code',monospace; font-size:.75rem; color:var(--white-dim); text-align:center; line-height:1.8; }
+    .about-box .edu span { color:var(--teal); display:block; }
+
+    /* SKILLS */
+    .skills-categories { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+    .skill-card { background:var(--bg2); border:1px solid rgba(100,255,218,.1); border-radius:6px; padding:26px; transition:border-color .3s,transform .3s; }
+    .skill-card:hover { border-color:var(--teal); transform:translateY(-4px); }
+    .skill-card h3 { font-family:'Fira Code',monospace; font-size:.75rem; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+    .skill-tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .skill-tag { font-family:'Fira Code',monospace; font-size:.73rem; color:var(--white-dim); background:rgba(100,255,218,.06); border:1px solid rgba(100,255,218,.15); border-radius:3px; padding:4px 10px; }
+
+    /* EXPERIENCE */
+    .exp-layout { display:grid; grid-template-columns:160px 1fr; }
+    .exp-tabs { display:flex; flex-direction:column; border-left:2px solid var(--bg3); }
+    .exp-tab { font-family:'Fira Code',monospace; font-size:.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--white-dim); padding:14px 18px; cursor:pointer; border-left:2px solid transparent; margin-left:-2px; transition:all .2s; background:transparent; }
+    .exp-tab.active, .exp-tab:hover { color:var(--teal); border-left-color:var(--teal); background:var(--teal-dim); }
+    .exp-content { padding:0 30px; }
+    .exp-panel { display:none; }
+    .exp-panel.active { display:block; }
+    .exp-panel h3 { font-size:1.2rem; font-weight:500; margin-bottom:6px; }
+    .exp-panel h3 span { color:var(--teal); }
+    .exp-panel .date, .exp-panel .loc { font-family:'Fira Code',monospace; font-size:.76rem; color:var(--white-dim); margin-bottom:4px; }
+    .exp-panel ul { margin-top:18px; list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .exp-panel ul li { font-size:.95rem; color:var(--white-dim); line-height:1.7; display:flex; gap:10px; }
+    .exp-panel ul li::before { content:'▸'; color:var(--teal); flex-shrink:0; margin-top:3px; }
+
+    /* PROJECTS FEATURED */
+    .featured-projects { display:flex; flex-direction:column; gap:60px; margin-bottom:60px; }
+    .feat-project { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center; }
+    .feat-project.rev { direction:rtl; }
+    .feat-project.rev > * { direction:ltr; }
+    .feat-img { background:var(--bg2); border-radius:6px; height:200px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(100,255,218,.1); font-size:3.5rem; position:relative; overflow:hidden; }
+    .feat-img::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,var(--bg2),var(--bg3)); }
+    .feat-img span { position:relative; z-index:1; }
+    .feat-info { padding:0 20px; }
+    .feat-info .over { font-family:'Fira Code',monospace; font-size:.73rem; color:var(--teal); margin-bottom:8px; }
+    .feat-info h3 { font-size:1.3rem; font-weight:600; margin-bottom:14px; }
+    .feat-desc { background:var(--bg2); border-radius:4px; padding:18px; margin-bottom:14px; }
+    .feat-desc p { font-size:.88rem; color:var(--white-dim); line-height:1.7; }
+    .feat-tech { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .feat-tech span { font-family:'Fira Code',monospace; font-size:.73rem; color:var(--white-dim); }
+    .feat-links a { color:var(--white-dim); transition:color .2s; margin-right:12px; }
+    .feat-links a:hover { color:var(--teal); }
+    .feat-links svg { width:20px; height:20px; fill:currentColor; }
+
+    /* PROJECT GRID */
+    .proj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .proj-card { background:var(--bg2); border-radius:6px; padding:26px; border:1px solid rgba(100,255,218,.08); display:flex; flex-direction:column; gap:12px; transition:transform .3s,border-color .3s; }
+    .proj-card:hover { transform:translateY(-6px); border-color:rgba(100,255,218,.3); }
+    .proj-card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+    .proj-card-top svg.folder { width:34px; height:34px; fill:var(--teal); }
+    .proj-card-links a { color:var(--white-dim); transition:color .2s; margin-left:8px; }
+    .proj-card-links a:hover { color:var(--teal); }
+    .proj-card-links svg { width:18px; height:18px; fill:currentColor; }
+    .proj-card h3 { font-size:.98rem; font-weight:600; }
+    .proj-card p { font-size:.84rem; color:var(--white-dim); line-height:1.6; flex:1; }
+    .proj-card .tech { font-family:'Fira Code',monospace; font-size:.71rem; color:var(--white-dim); opacity:.65; }
+
+    /* CERTS */
+    .cert-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .cert-card { background:var(--bg2); border:1px solid rgba(100,255,218,.08); border-radius:6px; padding:22px; transition:border-color .3s,transform .3s; }
+    .cert-card:hover { border-color:var(--teal); transform:translateY(-3px); }
+    .cert-card .issuer { font-family:'Fira Code',monospace; font-size:.7rem; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .cert-card h4 { font-size:.88rem; color:var(--white); margin-bottom:6px; line-height:1.4; }
+    .cert-card .cdate { font-family:'Fira Code',monospace; font-size:.7rem; color:var(--white-dim); opacity:.6; margin-bottom:10px; }
+    .cert-card a { font-family:'Fira Code',monospace; font-size:.72rem; color:var(--teal); text-decoration:none; }
+    .cert-card a:hover { text-decoration:underline; }
+
+    /* PUBLICATIONS */
+    .pub-list { display:flex; flex-direction:column; gap:18px; }
+    .pub-item { background:var(--bg2); border:1px solid rgba(100,255,218,.08); border-radius:6px; padding:26px; transition:border-color .3s; }
+    .pub-item:hover { border-color:rgba(100,255,218,.3); }
+    .pub-item .badge { font-family:'Fira Code',monospace; font-size:.7rem; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .pub-item h3 { font-size:1rem; font-weight:600; margin-bottom:10px; }
+    .pub-item p { font-size:.86rem; color:var(--white-dim); line-height:1.7; margin-bottom:12px; }
+    .pub-item a { font-family:'Fira Code',monospace; font-size:.73rem; color:var(--teal); text-decoration:none; }
+    .pub-item a:hover { text-decoration:underline; }
+
+    /* LEADERSHIP */
+    .lead-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+    .lead-card { background:var(--bg2); border:1px solid rgba(100,255,218,.08); border-radius:6px; padding:26px; transition:border-color .3s,transform .3s; }
+    .lead-card:hover { border-color:rgba(100,255,218,.3); transform:translateY(-4px); }
+    .lead-card .role { font-family:'Fira Code',monospace; font-size:.7rem; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .lead-card h3 { font-size:.98rem; font-weight:600; margin-bottom:10px; }
+    .lead-card p { font-size:.84rem; color:var(--white-dim); line-height:1.7; }
+
+    footer { text-align:center; padding:40px 20px; font-family:'Fira Code',monospace; font-size:.76rem; color:var(--white-dim); opacity:.55; border-top:1px solid rgba(100,255,218,.05); }
+    footer span { color:var(--teal); }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes fadeInLeft { from{opacity:0;transform:translateX(-40px)} to{opacity:.5;transform:translateX(0)} }
+    @keyframes fadeInRight { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+
+    @media(max-width:1000px){
+      nav{padding:16px 24px;}
+      .nav-links{display:none;}
+      #home{flex-direction:column;padding:110px 28px 60px;}
+      .leaf-container{display:none;}
+      .hero-text{padding-left:0;}
+      .hero-greeting{font-size:2.6rem;}
+      section:not(#home){padding:70px 28px;}
+      .about-grid,.feat-project,.feat-project.rev{grid-template-columns:1fr;}
+      .feat-project.rev{direction:ltr;}
+      .feat-img{display:none;}
+      .feat-info{padding:0;}
+      .skills-categories,.proj-grid,.cert-grid,.lead-grid{grid-template-columns:1fr;}
+      .exp-layout{grid-template-columns:1fr;}
+      .exp-tabs{flex-direction:row;flex-wrap:wrap;border-left:none;border-bottom:2px solid var(--bg3);}
+      .exp-tab{border-left:none;border-bottom:2px solid transparent;margin-left:0;margin-bottom:-2px;}
+      .exp-tab.active{border-left-color:transparent;border-bottom-color:var(--teal);}
+      .exp-content{padding:20px 0 0;}
+      .section-title::after{width:80px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#home">Mahisha <span>S.</span></a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#leadership">Leadership</a></li>
+  </ul>
+  <div class="nav-icons">
+    <a href="https://mail.google.com/mail/?view=cm&to=mahishasenthilkumar6@gmail.com" target="_blank" title="Email">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </a>
+    <a href="https://github.com/Mahisha6" target="_blank" title="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/in/mahisha-senthil-kumar-5112b2222/" target="_blank" title="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section id="home">
+  <div class="ascii-art" aria-hidden="true"><pre>
+        - - - - - - - - - - -
+     - - - - - - - - - - - - - - -
+   - - - - - - - - - - - - - - - - -
+  - - - - - - - - - - - - - - - - - -
+ - - - - - - - - - - - - - - - - - - -
+ - - - - - - - - - - - - - - - - - - -
+  - - - - - - - - - - - - - - - - - -
+   - - - - - - - - - - - - - - - - -
+     - - - - - - - - - - - - - - -
+        - - - - - - - - - - -
+             - - - - - -
+          - - - - - - - - -
+        - - - - - - - - - - - -
+       - - - - - - - - - - - - - -
+      - - - - - - - - - - - - - - - -
+     - - - - - - - - - - - - - - - - -
+    - - - - - - - - - - - - - - - - - -
+   - - - - - - - - - - - - - - - - - - -
+  - - - - - - - - - - - - - - - - - - - -
+ - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - -
+ - - - - - - - - - - - - - - - - - - - - -
+  - - - - - - - - - - - - - - - - - - - -
+   - - - - - - - - - - - - - - - - - - -
+</pre></div>
+  <div class="hero-text">
+    <h1 class="hero-greeting">hi, <span class="name">mahisha</span> here.<span class="cursor"></span></h1>
+    <p class="hero-bio">I'm an Engineering graduate passionate about software development and data analytics, focused on building applications and turning data into impactful insights.</p>
+    <a class="btn-sayhi" href="https://mail.google.com/mail/?view=cm&to=mahishasenthilkumar6@gmail.com" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Say hi!
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="section-title"><span class="slash">/</span> about me</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a <strong>2025 B.Tech CSE graduate</strong> who enjoys building practical, real-world solutions through code. I like working across both development and data, applying a problem-solving mindset to create efficient and scalable applications.</p>
+      <p>I've had hands-on experience with <strong>Prompt Engineering</strong> at <a href="#">IIT Madras – A14 Bharat</a>, where I worked on LLM fine-tuning, NLP pipelines, and generative AI research. I'm passionate about the intersection of AI/ML and cloud-native application development.</p>
+      <p>Here are some technologies I've been working with:</p>
+      <ul class="skills-list">
+        <li>Python</li><li>TypeScript</li>
+        <li>React.js</li><li>Java</li>
+        <li>JavaScript (ES6+)</li><li>C#</li>
+      </ul>
+    </div>
+    <div class="about-box">
+      <div class="about-initials">MS</div>
+      <div class="edu">
+        <span>B.Tech Computer Science Engineering</span>
+        2025 Graduate<br/>Chennai, India
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <h2 class="section-title"><span class="slash">/</span> skills</h2>
+  <div class="skills-categories">
+    <div class="skill-card">
+      <h3>Coding Languages</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">C</span><span class="skill-tag">C++</span><span class="skill-tag">C#</span><span class="skill-tag">Python</span><span class="skill-tag">Java</span><span class="skill-tag">TypeScript</span><span class="skill-tag">JavaScript</span><span class="skill-tag">DSA</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>Data / Visualization</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">NumPy</span><span class="skill-tag">Pandas</span><span class="skill-tag">MySQL</span><span class="skill-tag">MongoDB</span><span class="skill-tag">Power BI</span><span class="skill-tag">Tableau</span><span class="skill-tag">SQL & NoSQL</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>Cloud & DevOps</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">AWS (EC2, Lambda, RDS, S3)</span><span class="skill-tag">Azure</span><span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span><span class="skill-tag">Terraform</span><span class="skill-tag">GitHub Actions</span><span class="skill-tag">Linux/Unix</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>AI / ML</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">CNN</span><span class="skill-tag">Prompt Engineering</span><span class="skill-tag">RAG Pipelines</span><span class="skill-tag">FAISS</span><span class="skill-tag">Pinecone</span><span class="skill-tag">Model Optimization</span><span class="skill-tag">Feature Engineering</span><span class="skill-tag">Model Deployment</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <h2 class="section-title"><span class="slash">/</span> experience</h2>
+  <div class="exp-layout">
+    <div class="exp-tabs">
+      <div class="exp-tab active" onclick="showExp('iit')">IIT MADRAS</div>
+    </div>
+    <div class="exp-content">
+      <div class="exp-panel active" id="exp-iit">
+        <h3>Prompt Engineering Intern @ <span>IIT Madras – A14 Bharat</span></h3>
+        <div class="date">02/08/2024 – 30/10/2024</div>
+        <div class="loc">📍 Chennai, India</div>
+        <ul>
+          <li>Curated and optimized 3,000+ prompts for LLM fine-tuning and evaluation to improve accuracy and contextual understanding.</li>
+          <li>Analyzed prompt-output metrics, identified linguistic biases, and improved model adaptability across multiple use cases.</li>
+          <li>Developed structured prompt taxonomies for education and technical problem-solving datasets to support scalable AI-driven learning tools.</li>
+          <li>Strengthened NLP and Python preprocessing pipelines; hands-on experience with prompt design methodologies and generative AI research.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <h2 class="section-title"><span class="slash">/</span> projects</h2>
+  <div class="featured-projects">
+    <div class="feat-project">
+      <div class="feat-img"><span>🚗</span></div>
+      <div class="feat-info">
+        <div class="over">Featured Project</div>
+        <h3>CNN Accident Detection</h3>
+        <div class="feat-desc"><p>Built a CNN model capable of detecting and classifying road accidents from live CCTV footage. Designed for smart city safety systems with automated alerts for faster emergency response using TensorFlow and OpenCV.</p></div>
+        <div class="feat-tech"><span>Python</span><span>TensorFlow</span><span>OpenCV</span><span>CNN</span></div>
+        <div class="feat-links"><a href="https://github.com/Mahisha6/CNN--ACCIDENT-DETECTION/tree/main" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+    </div>
+    <div class="feat-project rev">
+      <div class="feat-img"><span>🔐</span></div>
+      <div class="feat-info">
+        <div class="over">Featured Project</div>
+        <h3>KYC Bot (Azure-based)</h3>
+        <div class="feat-desc"><p>AI-powered KYC automation bot using Azure Cognitive Services and ML APIs. Integrated Blob Storage and Document Intelligence to process ID proofs and extract key features automatically.</p></div>
+        <div class="feat-tech"><span>Azure</span><span>Cognitive Services</span><span>ML APIs</span><span>Blob Storage</span></div>
+        <div class="feat-links"><a href="https://github.com/Mahisha6/KYC-bot" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proj-grid">
+    <div class="proj-card">
+      <div class="proj-card-top">
+        <svg class="folder" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+        <div class="proj-card-links"><a href="https://github.com/Mahisha6/med" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+      <h3>EHR Security via Blockchain</h3>
+      <p>Decentralized EHR system with secure patient data storage using blockchain and homomorphic searchable encryption for privacy-preserving queries.</p>
+      <div class="tech">Blockchain · Homomorphic Encryption</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-card-top">
+        <svg class="folder" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+        <div class="proj-card-links"><a href="https://github.com/Mahisha6/Credit-Card" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+      <h3>Credit Card Fraud Detection</h3>
+      <p>Anomaly detection using Random Forest and Isolation Forest on imbalanced data. Applied SMOTE for balancing and enhanced model explainability.</p>
+      <div class="tech">Python · Random Forest · SMOTE</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-card-top">
+        <svg class="folder" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+        <div class="proj-card-links"><a href="https://github.com/Mahisha6/parkinson-s-disease-detection" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+      <h3>Parkinson's Disease Detection</h3>
+      <p>Supervised ML pipeline using biomedical voice datasets. Compared Random Forest, SVM, and XGBoost with feature scaling and robust cross-validation.</p>
+      <div class="tech">Python · SVM · XGBoost · Random Forest</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-card-top">
+        <svg class="folder" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+        <div class="proj-card-links"><a href="https://github.com/Mahisha6/object-recogonition-using-ResNet50" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+      <h3>Object Recognition – ResNet50</h3>
+      <p>Transfer learning with ResNet50 for multi-category image classification. GPU-accelerated training with data augmentation and early stopping.</p>
+      <div class="tech">TensorFlow · Keras · ResNet50</div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-card-top">
+        <svg class="folder" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+        <div class="proj-card-links"><a href="https://github.com/Mahisha6/deploying-machine-learning-model" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+      </div>
+      <h3>Deploying ML Models</h3>
+      <p>REST APIs for ML models via Flask and AWS EC2. Containerized with Docker, CI/CD via GitHub Actions, optimized for latency and fault-tolerant cloud deployment.</p>
+      <div class="tech">Flask · AWS EC2 · Docker · GitHub Actions</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <h2 class="section-title"><span class="slash">/</span> certifications</h2>
+  <div class="cert-grid">
+    <div class="cert-card"><div class="issuer">AWS</div><h4>AWS Academy Machine Learning Foundations</h4><div class="cdate">AWS Academy Graduate</div><a href="https://drive.google.com/file/d/1PAWOOdzNjdkZNVif9jhmrjFE8tcN9twG/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Cisco</div><h4>Networking Basics</h4><div class="cdate">29/08/2023</div><a href="https://drive.google.com/file/d/1E0CYo408UmqC5j764AtyV4a0eZp3nX8o/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Great Learning</div><h4>Linux Tutorial</h4><div class="cdate">06/05/2023</div><a href="https://drive.google.com/file/d/1FWmSJNM0Bjc8L3JgUdmqio5U0FKndMmV/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Udemy</div><h4>The Complete 2023 Web Development Bootcamp</h4><div class="cdate">29/10/2023</div><a href="https://drive.google.com/file/d/1MoYVnPz3aEzm3TZXqPrjxzAzUeOXAsUQ/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Udemy</div><h4>SAP Basics</h4><div class="cdate">06/05/2025</div><a href="https://drive.google.com/file/d/1ZtjD4EoyF0J_eVXTA_LJGpoNJfK7D58z/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Udemy</div><h4>Learn C++ Programming: Beginner to Advance</h4><div class="cdate">27/04/2023</div><a href="https://drive.google.com/file/d/1_BAr43kQYLJYNPqEB9UNjr00j-FCyn_Z/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+    <div class="cert-card"><div class="issuer">Udemy</div><h4>Python Programming</h4><div class="cdate">27/04/2023</div><a href="https://drive.google.com/file/d/1qyy1qS_fVRlaj-fczLqcs1iIrWtjcryL/view?usp=sharing" target="_blank">View Certificate ↗</a></div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS & CONFERENCES -->
+<section id="publications">
+  <h2 class="section-title"><span class="slash">/</span> publications & conferences</h2>
+  <div class="pub-list">
+    <div class="pub-item">
+      <div class="badge">Research Paper · ICOEI-2025</div>
+      <h3>Emotion Recognition Using CNN</h3>
+      <p>Developed an emotion recognition system using CNNs for automatic facial expression analysis. Presented at the 8th International Conference on Trends in Electronics and Informatics (ICOEI-2025). Trained and validated on benchmark datasets (FER2013, CK+, AffectNet) achieving robust, spatially invariant performance.</p>
+      <a href="https://drive.google.com/drive/folders/1kjQ27MWQNsW53fjpR5f4hlizDfnH2hYr" target="_blank">View Paper ↗</a>
+    </div>
+    <div class="pub-item">
+      <div class="badge">International Programme · RIT Dubai</div>
+      <h3>Global Immersion Programme 2025 – Dubai, UAE</h3>
+      <p>Completed the international Business Challenge hosted by Ureka Education Group and Rochester Institute of Technology, Dubai. Gained experience through industry workshops, innovation labs, and business case execution.</p>
+      <a href="https://drive.google.com/file/d/14XXhSz1oZcFwQDwZdXANK6zmznzO-JVT/view?usp=sharing" target="_blank">View Certificate ↗</a>
+    </div>
+    <div class="pub-item">
+      <div class="badge">🏆 2nd Place · SRM University</div>
+      <h3>Capture The Flag – Cybersecurity Challenge</h3>
+      <p>Secured 2nd place among multi-department participants. Performed real-time flag capture tasks involving traffic decoding, cryptography, OSINT investigation, steganography, port scanning, and system exploitation.</p>
+      <a href="https://drive.google.com/file/d/1aqE1-BnzpYoJtNgDCbHwdE9fq-AVG72J/view?usp=drive_link" target="_blank">View Certificate ↗</a>
+    </div>
+    <div class="pub-item">
+      <div class="badge">Hackathon · SRM University</div>
+      <h3>Tech Mesh '23 – Futurithon 1.0 / CodeQuest</h3>
+      <p>Participated as part of the Innovation Squad in competitive coding tasks focused on algorithm design, logical optimization, debugging, and structured implementation under time constraints.</p>
+      <a href="https://drive.google.com/file/d/1igKU9-Acoh3MKwMk3ENY9lOqP5w1H6mr/view?usp=sharing" target="_blank">View Certificate ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section id="leadership">
+  <h2 class="section-title"><span class="slash">/</span> leadership & activities</h2>
+  <div class="lead-grid">
+    <div class="lead-card">
+      <div class="role">Associate Lead</div>
+      <h3>Hack The Box Student Club</h3>
+      <p>Premier cybersecurity club focused on penetration testing, ethical hacking, and practical training. Organized CTF competitions, mentored peers in cybersecurity fundamentals, and contributed to digital safety awareness campaigns.</p>
+    </div>
+    <div class="lead-card">
+      <div class="role">Corporate Lead</div>
+      <h3>Think Digital Club</h3>
+      <p>Led marketing and outreach initiatives, coordinated sponsorships, designed digital campaigns, and mentored members in corporate communication and cross-college innovation events.</p>
+    </div>
+    <div class="lead-card">
+      <div class="role">Tech Member</div>
+      <h3>GitHub Student Developer Club</h3>
+      <p>Hosted workshops on Git, GitHub, and version control. Guided peers through open-source setups, collaborated in hackathons, and contributed to team project repositories.</p>
+    </div>
+    <div class="lead-card">
+      <div class="role">Event Organizer & Coordinator</div>
+      <h3>Aaruush – SRMIST National Techno-Management Fest</h3>
+      <p>Led logistics for 500+ participant fest. Managed volunteer teams, coordinated sponsors and corporate partners, and ensured smooth execution through strategic planning.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Built by <span>Mahisha Senthil Kumar</span></footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── LEAF CANVAS ANIMATION ──
+  (function() {
+    const canvas = document.getElementById('leafCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = 320, H = 380;
+    canvas.width = W;
+    canvas.height = H;
+
+    // Draw the maple leaf shape onto an offscreen canvas, then sample dots from it
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const octx = off.getContext('2d');
+
+    // Draw filled maple leaf path (scaled to fit canvas)
+    const cx = W / 2, cy = H * 0.52, s = 145;
+    octx.beginPath();
+    // Maple leaf path using moveTo/bezierCurveTo
+    octx.save();
+    octx.translate(cx, cy);
+    octx.scale(s, s);
+
+    octx.beginPath();
+    // stem
+    octx.moveTo(0, 1);
+    octx.lineTo(0.06, 0.65);
+    octx.lineTo(0.22, 0.62);
+    // right bottom lobe
+    octx.bezierCurveTo(0.35, 0.6, 0.4, 0.45, 0.3, 0.35);
+    octx.bezierCurveTo(0.42, 0.38, 0.55, 0.32, 0.5, 0.2);
+    // right middle lobe
+    octx.bezierCurveTo(0.62, 0.25, 0.78, 0.15, 0.7, 0.02);
+    octx.bezierCurveTo(0.82, 0.08, 0.9, -0.02, 0.82, -0.12);
+    // right upper lobe
+    octx.bezierCurveTo(0.9, -0.08, 0.95, -0.2, 0.82, -0.28);
+    octx.bezierCurveTo(0.88, -0.35, 0.85, -0.48, 0.68, -0.45);
+    // top right
+    octx.bezierCurveTo(0.72, -0.58, 0.55, -0.72, 0.35, -0.62);
+    // top center right
+    octx.bezierCurveTo(0.28, -0.72, 0.12, -0.82, 0, -0.78);
+    // top center left (mirror)
+    octx.bezierCurveTo(-0.12, -0.82, -0.28, -0.72, -0.35, -0.62);
+    // top left
+    octx.bezierCurveTo(-0.55, -0.72, -0.72, -0.58, -0.68, -0.45);
+    octx.bezierCurveTo(-0.85, -0.48, -0.88, -0.35, -0.82, -0.28);
+    // left upper lobe
+    octx.bezierCurveTo(-0.95, -0.2, -0.9, -0.08, -0.82, -0.12);
+    octx.bezierCurveTo(-0.9, -0.02, -0.82, 0.08, -0.7, 0.02);
+    // left middle lobe
+    octx.bezierCurveTo(-0.78, 0.15, -0.62, 0.25, -0.5, 0.2);
+    octx.bezierCurveTo(-0.55, 0.32, -0.42, 0.38, -0.3, 0.35);
+    // left bottom lobe
+    octx.bezierCurveTo(-0.4, 0.45, -0.35, 0.6, -0.22, 0.62);
+    octx.lineTo(-0.06, 0.65);
+    octx.lineTo(0, 1);
+    octx.closePath();
+
+    octx.restore();
+    octx.fillStyle = '#ffffff';
+    octx.fill();
+
+    // Also draw veins as strokes
+    octx.save();
+    octx.translate(cx, cy);
+    octx.scale(s, s);
+    octx.strokeStyle = '#ffffff';
+    octx.lineWidth = 0.012;
+
+    const veins = [
+      [[0,0.9],[0,-0.7]],
+      [[0,0.3],[0.38,-0.08]],
+      [[0,0.3],[-0.38,-0.08]],
+      [[0,0.05],[0.58,0.1]],
+      [[0,0.05],[-0.58,0.1]],
+      [[0,-0.1],[0.62,-0.3]],
+      [[0,-0.1],[-0.62,-0.3]],
+      [[0,-0.35],[0.28,-0.6]],
+      [[0,-0.35],[-0.28,-0.6]],
+    ];
+    for (const [[x1,y1],[x2,y2]] of veins) {
+      octx.beginPath();
+      octx.moveTo(x1,y1);
+      octx.lineTo(x2,y2);
+      octx.stroke();
+    }
+    octx.restore();
+
+    // Sample pixel data — collect white pixels as dot positions
+    const imageData = octx.getImageData(0, 0, W, H);
+    const data = imageData.data;
+    const dots = [];
+    const gap = 7; // spacing between dots
+
+    for (let y = 0; y < H; y += gap) {
+      for (let x = 0; x < W; x += gap) {
+        const idx = (y * W + x) * 4;
+        if (data[idx] > 200) { // white pixel = inside leaf or vein
+          dots.push([x, y]);
+        }
+      }
+    }
+
+    // Sort bottom-to-top (largest y first)
+    dots.sort((a, b) => b[1] - a[1]);
+
+    let revealed = 0;
+    const total = dots.length;
+    const speed = Math.max(2, Math.floor(total / 120)); // animate over ~120 frames
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < revealed; i++) {
+        const [x, y] = dots[i];
+        const progress = 1 - (y / H); // 0 at bottom, 1 at top
+        const alpha = 0.35 + progress * 0.6;
+        const radius = 2 + progress * 0.8;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(100, 255, 218, ${alpha})`;
+        ctx.fill();
+      }
+      if (revealed < total) {
+        revealed = Math.min(revealed + speed, total);
+        requestAnimationFrame(draw);
+      }
+    }
+
+    setTimeout(() => requestAnimationFrame(draw), 300);
+  })();
+
+  function showExp(id) {
+    document.querySelectorAll('.exp-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.exp-panel').forEach(p => p.cl
